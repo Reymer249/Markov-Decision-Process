@@ -13,8 +13,8 @@ from world import World
 class Dynamic_Programming:
 
     def __init__(self):
-        self.V_s = None # will store a potential value solution table
-        self.Q_sa = None # will store a potential action-value solution table
+        self.V_s = None  # will store a potential value solution table
+        self.Q_sa = None  # will store a potential action-value solution table
         
     def value_iteration(self,env,gamma = 1.0, theta=0.001):
         ''' Executes value iteration on env. 
@@ -26,7 +26,20 @@ class Dynamic_Programming:
         V_s = np.zeros(env.n_states)
     
         ## IMPLEMENT YOUR VALUE ITERATION ALGORITHM HERE
-        print("You still need to implement value iteration!")
+        delta = theta
+        while delta >= theta:
+            delta = 0
+            for state in env.states:
+                x = V_s[state]
+
+                max_trans_value = -np.inf
+                for action in env.actions:
+                    s_prime, r = env.transition_function(state, action)
+                    value = r + gamma * V_s[s_prime]
+                    max_trans_value = value if value > max_trans_value else max_trans_value
+
+                V_s[state] = max_trans_value
+                delta = max(delta, abs(V_s[state] - x))
     
         self.V_s = V_s
         return
@@ -52,14 +65,18 @@ class Dynamic_Programming:
         print("Start executing. Current map:") 
         env.print_map()
         while not env.terminal:
-            current_state = env.get_current_state() # this is the current state of the environment, from which you will act
+            current_state = env.get_current_state()  # this is the current state of the environment, from which you will act
             available_actions = env.actions
             # Compute action values
             if table == 'V' and self.V_s is not None:
                 ## IMPLEMENT ACTION VALUE ESTIMATION FROM self.V_s HERE !!!
-                print("You still need to implement greedy action selection from the value table self.V_s!")
-                greedy_action = None # replace this!
-
+                greedy_action = None  # replace this!
+                greedy_value = -np.inf
+                for action in available_actions:
+                    s_prime, r = env.transition_function(current_state, action)
+                    if self.V_s[s_prime] > greedy_value:
+                        greedy_value = self.V_s[s_prime]
+                        greedy_action = action
                 
             
             elif table == 'Q' and self.Q_sa is not None:
