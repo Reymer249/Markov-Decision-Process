@@ -67,6 +67,7 @@ class Dynamic_Programming:
         while not env.terminal:
             current_state = env.get_current_state()  # this is the current state of the environment, from which you will act
             available_actions = env.actions
+            gamma = 1.0  # Must be the same, as in the call of self.value_iteration() function
             # Compute action values
             if table == 'V' and self.V_s is not None:
                 ## IMPLEMENT ACTION VALUE ESTIMATION FROM self.V_s HERE !!!
@@ -74,8 +75,9 @@ class Dynamic_Programming:
                 greedy_value = -np.inf
                 for action in available_actions:
                     s_prime, r = env.transition_function(current_state, action)
-                    if self.V_s[s_prime] > greedy_value:
-                        greedy_value = self.V_s[s_prime]
+                    considered_value = r + gamma*self.V_s[s_prime]
+                    if considered_value > greedy_value:
+                        greedy_value = considered_value
                         greedy_action = action
                 
             
