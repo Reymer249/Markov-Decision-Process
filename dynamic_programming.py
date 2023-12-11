@@ -33,7 +33,7 @@ class Dynamic_Programming:
                 x = V_s[state]
 
                 max_trans_value = -np.inf
-                for action in env.actions:
+                for action in env.actions:  # The Bellman equation formula
                     s_prime, r = env.transition_function(state, action)
                     value = r + gamma * V_s[s_prime]
                     max_trans_value = value if value > max_trans_value else max_trans_value
@@ -61,7 +61,7 @@ class Dynamic_Programming:
                 for action_n in range(len(env.actions)):
                     x = Q_sa[state][action_n]
                     s_prime, r = env.transition_function(state, env.actions[action_n])
-                    Q_sa[state][action_n] = r + gamma * max(Q_sa[s_prime])
+                    Q_sa[state][action_n] = r + gamma * max(Q_sa[s_prime])  # The Bellman equation formula
                     delta = max(delta, abs(Q_sa[state][action_n] - x))
 
         self.Q_sa = Q_sa
@@ -83,7 +83,9 @@ class Dynamic_Programming:
                 greedy_value = -np.inf
                 for action in available_actions:
                     s_prime, r = env.transition_function(current_state, action)
-                    considered_value = r + gamma*self.V_s[s_prime]
+                    considered_value = r + gamma*self.V_s[s_prime]  # We have to apply the Bellman equation again to
+                    # find the best action to make. In other words, having the value function we still need to use
+                    # Bellman equation for every state to get the policy.
                     if considered_value > greedy_value:
                         greedy_value = considered_value
                         greedy_action = action
@@ -91,6 +93,8 @@ class Dynamic_Programming:
             
             elif table == 'Q' and self.Q_sa is not None:
                 ## IMPLEMENT ACTION VALUE ESTIMATION FROM self.Q_sa here !!!
+                # As you may see, here we just use the value we already have in the table. However, the table is
+                # [n_actions] times bigger. There is an exchange between number of computations and the size of the table.
                 greedy_action = available_actions[np.argmax(self.Q_sa[current_state])]
 
                 
