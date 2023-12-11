@@ -134,7 +134,7 @@ def get_greedy_index(action_values):
     return np.where(action_values == np.max(action_values))
     
 if __name__ == '__main__':
-    env = World('prison.txt') 
+    env = World('prison2.txt')
     DP = Dynamic_Programming()
 
     # Run value iteration
