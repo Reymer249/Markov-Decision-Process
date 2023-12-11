@@ -51,10 +51,18 @@ class Dynamic_Programming:
 
         print("Starting Q-value Iteration (QI)")
         # initialize state-action value table
-        Q_sa = np.zeros([env.n_states,env.n_actions])
+        Q_sa = np.zeros([env.n_states, env.n_actions])
 
         ## IMPLEMENT YOUR Q-VALUE ITERATION ALGORITHM HERE
-        print("You still need to implement Q-value iteration!")
+        delta = theta
+        while delta >= theta:
+            delta = 0
+            for state in env.states:
+                for action_n in range(len(env.actions)):
+                    x = Q_sa[state][action_n]
+                    s_prime, r = env.transition_function(state, env.actions[action_n])
+                    Q_sa[state][action_n] = r + gamma * max(Q_sa[s_prime])
+                    delta = max(delta, abs(Q_sa[state][action_n] - x))
 
         self.Q_sa = Q_sa
         return
@@ -71,7 +79,7 @@ class Dynamic_Programming:
             # Compute action values
             if table == 'V' and self.V_s is not None:
                 ## IMPLEMENT ACTION VALUE ESTIMATION FROM self.V_s HERE !!!
-                greedy_action = None  # replace this!
+                greedy_action = None
                 greedy_value = -np.inf
                 for action in available_actions:
                     s_prime, r = env.transition_function(current_state, action)
@@ -83,10 +91,8 @@ class Dynamic_Programming:
             
             elif table == 'Q' and self.Q_sa is not None:
                 ## IMPLEMENT ACTION VALUE ESTIMATION FROM self.Q_sa here !!!
-                
-                print("You still need to implement greedy action selection from the state-action value table self.Q_sa!")
-                greedy_action = None # replace this!
-                
+                greedy_action = available_actions[np.argmax(self.Q_sa[current_state])]
+
                 
             else:
                 print("No optimal value table was detected. Only manual execution possible.")
